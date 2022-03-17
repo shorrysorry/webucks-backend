@@ -1,0 +1,24 @@
+{
+  "name": "webucks-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon npm start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.3"
+  },
+  "devDependencies": {
+    "@prisma/client": "^3.11.0",
+    "dotenv": "^16.0.0",
+    "nodemon": "^2.0.15",
+    "prettier": "2.6.0",
+    "prettier-plugin-prisma": "^3.10.0",
+    "prisma": "^3.11.0"
+  }
+}

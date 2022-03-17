@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Categories {
+  id         Int       @id @default(autoincrement())
+  name       String
+  created_at DateTime? @default(now())
+
+  Products Products[]
+  @@map("categories")
+}
+
+model Products {
+  id           Int        @id @default(autoincrement())
+  korean_name  String     @unique
+  english_name String
+  category_id  Int
+  created_at   DateTime?  @default(now())
+  Categories   Categories @relation(fields: [category_id], references: [id])
+
+  ProductImages     ProductImages[]
+  Nutritions        Nutritions[]
+  ProductsAllergies ProductsAllergies[]
+  @@map("products")
+}
+
+model ProductImages {
+  id         Int       @id @default(autoincrement())
+  image_url  String
+  product_id Int
+  created_at DateTime? @default(now())
+  Products   Products  @relation(fields: [product_id], references: [id])
+
+  @@map("product_images")
+}
+
+model Allergies {
+  id         Int       @id @default(autoincrement())
+  name       String    @unique
+  created_at DateTime? @default(now())
+
+  ProductsAllergies ProductsAllergies[]
+  @@map("allergies")
+}
+
+model ProductsAllergies {
+  id         Int       @id @default(autoincrement())
+  product_id Int
+  allergy_id Int
+  created_at DateTime? @default(now())
+  Products   Products  @relation(fields: [product_id], references: [id])
+  Allergies  Allergies @relation(fields: [allergy_id], references: [id])
+
+  @@map("products_allergies")
+}
+
+model Nutritions {
+  id         Int       @id @default(autoincrement())
+  product_id Int
+  caffeine   Float
+  fat        Float
+  sugar      Float
+  sodium     Float
+  created_at DateTime? @default(now())
+  Products   Products  @relation(fields: [product_id], references: [id])
+
+  @@map("nutritions")
+}
+
+model Users {
+  id            Int     @id @default(autoincrement())
+  email         String  @unique
+  password      String
+  username      String?
+  address       String?
+  phone_number  Int?
+  policy_agreed Boolean @default(true)
+
+  @@map("users")
+}
