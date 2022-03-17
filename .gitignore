@@ -1,4 +1,4 @@
-data/
+databases/data/*
 
 # Logs
 logs
