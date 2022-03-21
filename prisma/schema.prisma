@@ -31,6 +31,7 @@ model Products {
   Nutritions        Nutritions[]
   ProductsAllergies ProductsAllergies[]
   @@map("products")
+  IsLikes IsLikes[]
 }
 
 model ProductImages {
@@ -86,4 +87,13 @@ model Users {
   policy_agreed Boolean @default(true)
 
   @@map("users")
+}
+
+model IsLikes {
+  id         Int      @id @default(autoincrement())
+  is_like    Boolean  @default(false)
+  product_id Int
+  Products   Products @relation(fields: [product_id], references: [id])
+
+  @@map("is_likes")
 }
