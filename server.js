@@ -7,8 +7,8 @@ const prisma = new PrismaClient();
 
 const app = express();
 
-app.use(routes);
 app.use(express.json());
+app.use(routes);
 
 app.get('/', (req, res) => {
   res.json({ message: '/ endpoint' });
@@ -21,51 +21,6 @@ app.get('/', (req, res) => {
 //
 //
 //
-
-// user/login POST : LOGIN API
-app.post('/user/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const keys = Object.keys(req.body);
-
-    // key 값 존재하는지 확인
-    if (!keys.includes('email') || !keys.includes('password')) {
-      const err = new Error('KEY_ERROR');
-      err.statusCode = 400;
-      throw err;
-    }
-
-    const isValidEmail = await prisma.$queryRaw`
-      SELECT email FROM users WHERE email=${email}
-    `;
-
-    // 가입되어 있는 id 인지 확인
-    if (!isValidEmail[0]) {
-      const err = new Error('INVALID_USER');
-      err.statusCode = 400;
-      throw err;
-    }
-
-    const myPw = await prisma.$queryRaw`
-      SELECT password FROM users WHERE email=${email}
-    `;
-    const isValidPw = bcrypt.compareSync(password, myPw[0]['password']);
-
-    // pw 가 일치 하는지
-    if (!isValidPw) {
-      const err = new Error('INVALID_USER');
-      err.statusCode = 400;
-      throw err;
-    }
-
-    const user = { user_id: email };
-    const token = jwt.sign(user, process.env.SECRET_KEY);
-    return res.status(201).json({ message: 'LOGIN_SUCCESS', jwt: token });
-  } catch (err) {
-    console.log(err);
-    return res.status(err.statusCode || 500).json({ message: err.message });
-  }
-});
 
 // users GET : USERS 호출 API
 app.get('/users', async (req, res) => {
