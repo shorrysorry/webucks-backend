@@ -1,26 +1,16 @@
-const sendCategories = (req, res) => {
-  res.json({
-    categoreis : [
-      {
-        "data" : [{
-          "id" : 1,
-          "name" : "콜드 브루 커피"
-        }, {
-          "id" : 2,
-          "name" : "브루드 커피",
-        }, {
-          "id" : 3,
-          "name" : "에스프레소",
-        }, {
-          "id" : 4,
-          "name" : "프라푸치노",
-        }, {
-          "id" : 5,
-          "name" : "블렌디드"
-        }]
-      }
-    ],
-  })
-}
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
-module.exports = { sendCategories }
+const sendCategories = async (req, res) => {
+  try {
+    const categoreis = await prisma.$queryRaw`
+      SELECT id, name FROM categories ORDER BY id
+      `;
+    return res.status(200).json({ categoreis });
+  } catch (err) {
+    console.log(err);
+    return res.status(err.statusCode || 500).json({ message: err.message });
+  }
+};
+
+module.exports = { sendCategories };
