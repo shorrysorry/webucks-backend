@@ -24,15 +24,13 @@ const signUp = async (email, password) => {
   return encryptUser;
 };
 
-const logIn = async (email, password) => {
+const checkValid = async (email, password) => {
   const userEmail = await userDao.getUserEmailByEmail(email);
-
   if (!userEmail.length) {
     const err = new Error('INVALID_USER');
     err.statusCode = 400;
     throw err;
   }
-
   const userPw = await userDao.getUserPwByEmail(email);
   const isSamePw = bcrypt.compareSync(password, userPw[0]['password']);
 
@@ -41,6 +39,10 @@ const logIn = async (email, password) => {
     err.statusCode = 400;
     throw err;
   }
+};
+
+const logIn = async (email, password) => {
+  checkValid(email, password);
 
   const user = { user_id: email };
   const token = jwt.sign(user, process.env.SECRET_KEY);
@@ -48,4 +50,20 @@ const logIn = async (email, password) => {
   return token;
 };
 
-module.exports = { signUp, logIn };
+const changePw = async (email, password, newPassword) => {
+  checkValid(email, password);
+
+  if (password === newPassword) {
+    const err = new Error('SAME_PASSWORD');
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const encryptPw = bcrypt.hashSync(newPassword, bcrypt.genSaltSync());
+
+  const updatePw = await userDao.updateNewPw(email, encryptPw);
+
+  return updatePw;
+};
+
+module.exports = { signUp, logIn, changePw };

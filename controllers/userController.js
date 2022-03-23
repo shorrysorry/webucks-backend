@@ -41,4 +41,22 @@ const logIn = async (req, res) => {
   }
 };
 
-module.exports = { signUp, logIn };
+const changePw = async (req, res) => {
+  try {
+    const { email, password, newPassword } = req.body;
+
+    if (!email || !password || !newPassword) {
+      const err = new Error('KEY_ERROR');
+      err.statusCode = 400;
+      throw err;
+    }
+
+    const changePw = await userService.changePw(email, password, newPassword);
+    return res.status(200).json({ message: 'PASSWORD IS CHANGED' });
+  } catch (err) {
+    console.log(err);
+    return res.status(err.statusCode || 500).json({ message: err.message });
+  }
+};
+
+module.exports = { signUp, logIn, changePw };

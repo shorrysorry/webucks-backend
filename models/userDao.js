@@ -19,4 +19,15 @@ const createUser = async (email, encryptPw) => {
       `;
 };
 
-module.exports = { getUserEmailByEmail, getUserPwByEmail, createUser };
+const updateNewPw = async (email, encryptPw) => {
+  return await prisma.$queryRaw`
+    UPDATE users SET password=${encryptPw} WHERE email=${email}
+    `;
+};
+
+module.exports = {
+  getUserEmailByEmail,
+  getUserPwByEmail,
+  createUser,
+  updateNewPw,
+};

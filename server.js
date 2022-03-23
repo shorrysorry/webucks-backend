@@ -30,28 +30,6 @@ app.get('/users', async (req, res) => {
   return res.json(signupUserDatas);
 });
 
-// users POST : PW CHANGE API
-app.post('/users', async (req, res) => {
-  try {
-    const { email, newPassword } = req.body;
-    console.log('email: ', email, 'newPw: ', newPassword);
-    const isValidEmail = await prisma.$queryRaw`
-      SELECT email FROM users WHERE email=${email}
-    `;
-    if (isValidEmail[0]) {
-      await prisma.$queryRaw`
-      UPDATE users SET password=${newPassword} WHERE email=${email}
-    `;
-      return res.status(201).json({ message: 'PASSWORD IS CHANGED' });
-    } else {
-      return res.status(400).json({ message: 'EMAIL IS NOT VALID' });
-    }
-  } catch (err) {
-    console.log(err);
-    return res.status(err.statusCode || 500).json({ message: err.message });
-  }
-});
-
 // islike POST : IS LIKE API
 app.post('/islike', async (req, res) => {
   const { productId } = req.body;
@@ -69,6 +47,12 @@ app.post('/islike', async (req, res) => {
 
   return res.json({ changedLike });
 });
+
+//
+//
+//
+//
+//
 
 // CREATE SERVER
 const server = http.createServer(app);
